@@ -4,7 +4,7 @@ Code to run AI tournaments for scarce resource division, such as the [MAD Chairs
 [Other software](https://github.com/ChrisSantosLang/MADChairs) is available to run such games with human players (or mixes of human and AI players). This software is much faster for situations in which all players are AI. 
 
 ## Installation
-You can open this code in [Google Colab](https://colab.research.google.com/) by following [this link](https://colab.research.google.com/). The first cell, containing `!pip install trueskill` must be run once to initialize the environment, then the main cell can be run as many times as you like. This code is set to pull `schedule.csv` from this github repository, but you can modify the code to use a local file instead. 
+You can open this code in [Google Colab](https://colab.research.google.com/) by following [this link]([https://colab.research.google.com/](https://colab.research.google.com/github//ChrisSantosLang/AiTournament/blob/main/MADChairs.ipynb)). The first cell, containing `!pip install trueskill` must be run once to initialize the environment, then the main cell can be run as many times as you like. This code is set to pull `schedule.csv` from this github repository, but you can modify the code to use a local file instead. 
 
 ## Expected outputs
 MAD Chairs is a game repeated for multiple rounds. In each round, each player selects from a set of resources (e.g. "A", "B", "C", "D" or "E") or selects to "skip". Each player who selects a resource no other player selects for that round wins that round.
