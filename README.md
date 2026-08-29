@@ -18,7 +18,7 @@ The stats file shows the "edge" and "win rate" of several strategies against eac
 
  * **random** selects randomly.
  * **rotate0** selects a unique resources for each of the first players and skip to the rest and continues those assignments indefinitely.
- * **random3** selects like **random** in round 1. Afterwards, it always repeats its previous selection when it won but only (n-1)/n of the time when it lost. If changing, it randomly selects from the resources selected least in the previous round.
+ * **random3** selects like **random** in round 1. Afterwards, it always repeats its previous selection when it won but only 1/3 of the time when it lost. If changing, it randomly selects from the resources selected least in the previous round.
  * **rotate** selects like **rotate0** in round 1. Afterward, assignments rotate by one position in each round.
  * **radicaleq** assigns the top resource to the player who has won the least (i.e. the least wealthy), then the next resource for the next wealthiest,  etc. After each resource has been assigned, all remaining players are assigned to 'skip'. In the case of ties, the player with later position counts as wealthier.
  * **equalize** is like **radicaleq**, but ingroup/outgroup accounting is added: It maintains a count of deviations from the strategy discounted by 30% per round (so deviations in the distant past will be forgiven). Any   player who has deviated at least once (after discounting) is in the outgroup and counted as wealthier than everyone in the ingroup.
@@ -43,3 +43,10 @@ Under `#Constants` you may also find it productive to modify:
  * `resources` (default `["A", "B", "C", "D", "E"]`) perhaps to make resources even more scarce
  * `num_players` (default `6`) if using a file specifying matches for a different number of players
  * `rationality` (default `50`) to explore different assumptions about rationality
+
+## Sample files
+In addition to the `schedule.csv` file which specifies the matches of a tournament, this github repository includes:
+
+ * `alwaysA_results.csv`: A sample results output. It was generated using `return "A"` for `submission()`.
+ * `alwaysA_stats.csv`: A sample stats output. It was generated using `return "A"` for `submission()`.
+ * `random5_submission.csv`: A sample submission output. It was generated using the **random5** strategy for `submission()`.
