@@ -4,17 +4,19 @@ Code to run AI tournaments for scarce resource division, such as the [MAD Chairs
 [Other software](https://github.com/ChrisSantosLang/MADChairs) is available to run such games with human players (or mixes of human and AI players). This software is much faster for situations in which all players are AI. 
 
 ## Installation
-You can open this code in [Google Colab](https://colab.research.google.com/) by following [this link](https://colab.research.google.com/github//ChrisSantosLang/AiTournament/blob/main/MADChairs.ipynb). The first cell, containing `!pip install trueskill` must be run once to initialize the environment, then the main cell can be run as many times as you like. This code is set to pull `schedule.csv` from this github repository, but you can modify the code to use a local file instead. 
+You can open this code in [Google Colab](https://colab.research.google.com/) by following [this link](https://colab.research.google.com/github//ChrisSantosLang/AiTournament/blob/main/MADChairs.ipynb). Click "Run all". The output files will be generated in the Files tab (it takes about 3 minutes). 
+
+The first cell, containing `!pip install trueskill`, must be run once to initialize the environment, but subsequent runs can skip that step (i.e. use the run button for the second cell). 
 
 ## Expected outputs
 MAD Chairs is a game repeated for multiple rounds. In each round, each player selects from a set of resources (e.g. "A", "B", "C", "D" or "E") or selects to "skip". Each player who selects a resource no other player selects for that round wins that round.
 
-Running the code will output in three files:
+Running the code will output three files:
  * `{filename}_results.csv` shows what the players selected in each round of each match and how often they won (as a %).
  * `{filename}_stats.csv` shows how well each strategy performed against the other strategies.
- * `{filename}_submission.csv` is the file to submit for a Kaggle contest. It contains only the mean ewins of your submission.
+ * `{filename}_submission.csv` is the file to submit for a Kaggle contest. It contains only the mean "ewins" of your submission (see about "ewins" below).
 
-The stats file shows the "edge" and "win rate" of several strategies against each other. The standard competitors include
+The stats file shows the "edge" and win rate of several strategies against each other. The standard competing strategies include
 
  * **random** selects randomly.
  * **rotate0** selects a unique resources for each of the first players and skip to the rest and continues those assignments indefinitely.
@@ -25,11 +27,13 @@ The stats file shows the "edge" and "win rate" of several strategies against eac
  * **caste** uses the [Trueskill](https://github.com/sublee/trueskill) algorithm to maintain skill-estimates for all players, uses those estimates to predict probabilities of winning, and maintains accounts of favors owed between all players, where debt incurred from beating a player is the probability of that other player winning and debt incurred from tying is that same probability minus one's own probability of winning. Returns as with equalize(), substituting credit for wealth.
  * **turntaking** selects like **caste**, but substituting debt for credit.
 
-"Edge" is a measure of incentive to defect. In matches with groups playing strategies A and B, the edge of A against B is the lowest win rate in the A group minus the lowest win rate in the B group (players who are winning the least have the greatest incentive to defect). 
+"Edge" is a measure of incentive to defect. The edge of A against B is the lowest win rate among players following A minus the lowest win rate among players following B. Half of the edge numbers are left out below because they effectively duplicate the displayed numbers (i.e. edge_A_vs_B = -edge_B_vs_A).
 
 ![Edge and win rates in 3v3 MAD Chairs](https://github.com/ChrisSantosLang/AiTournament/blob/main/Media/3v3madchairs.png?raw=true)
 
-To the extent that players are rational, they are likely to defect from B to A if A has clear edge over B, so the win rate of A against B is expected to converge toward the win rate of A against itself. Likewise, the win rate of A against B is expected to converge toward zero if B has clear edge over A (i.e. A has negative edge against B). We call this use of the edge statistic to modify win rate "ewin", where ewin_A_vs_B = min(win_A_vs_A, win_A_vs_B * (rationality ** edge_A_vs_B)). When rationality is 1, edge has no impact on ewin. As rationality rises, edge dominates ewin (except when edge is 0). rationality = 50 for this software by default. 
+To the extent that players are rational, they are likely to defect from B to A if A has clear edge over B, so the win rate of A against B is expected to converge toward the win rate of A against itself. Likewise, the win rate of A against B is expected to converge toward zero if B has clear edge over A (i.e. A has negative edge against B). We call this use of the edge statistic to modify win rate "ewin", where ewin_A_vs_B = min(win_A_vs_A, win_A_vs_B * (rationality ** edge_A_vs_B)). 
+
+When rationality is 1, edge has no impact on ewin. As rationality rises, edge dominates ewin (except when edge is 0). We use 50 for this software by default.
 
 ## Modifying the code
 The main way to modify this code is to fill the `submission()` function with your own MAD Chairs strategy. The parameters include `position: int`, `round: int`, `history: pd.DataFrame`, and `cache: dict`. The function  should return 'skip' or the letter of the resource your strategy would recommend to a player in the given `position` (1-6) and `round` (1-20) with the given `history` (which contains columns for "Position" and "Round{n}").
@@ -38,7 +42,7 @@ The cache may be used to improve efficiency by storing values calculated in prev
 
 Under `#Constants` you may also find it productive to modify:
 
- * `filename` to substitute a file specifying fewer (or more) matches. When debugging, a smaller file can help speed feedback.
+ * `filename` to substitute a file specifying fewer (or more) matches. When debugging, a smaller file can help speed feedback. The code on this repository is set to pull `schedule.csv` from this github repository, but you can modify the code to use a local file instead. 
  * `rounds` (default `20`) to explore the impacts of greater/lesser iteration
  * `resources` (default `["A", "B", "C", "D", "E"]`) perhaps to make resources even more scarce
  * `num_players` (default `6`) if using a file specifying matches for a different number of players
