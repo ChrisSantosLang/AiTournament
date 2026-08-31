@@ -12,9 +12,9 @@ The first cell, containing `!pip install trueskill`, must be run once to initial
 MAD Chairs is a game repeated for multiple rounds. In each round, each player selects from a set of resources (e.g. "A", "B", "C", "D" or "E") or selects to "skip". Each player who selects a resource no other player selects for that round wins that round.
 
 Running the code will output three files:
- * `{filename}_results.csv` shows what the players selected in each round of each match and how often they won (as a %).
- * `{filename}_stats.csv` shows how well each strategy performed against the other strategies.
- * `{filename}_submission.csv` is the file to submit for a Kaggle contest. It contains only the mean "ewins" of your submission (see about "ewins" below).
+ * `{strategy_name}_results.csv` shows what the players selected in each round of each match and how often they won (as a %).
+ * `{strategy_name}_stats.csv` shows how well each strategy performed against the other strategies.
+ * `{strategy_name}_submission.csv` is the file to submit for a Kaggle contest. It contains only the mean "ewins" of your submission (see about "ewins" below).
 
 The stats file shows the "edge" and win rate of several strategies against each other. The standard competing strategies include
 
@@ -42,7 +42,7 @@ The cache may be used to improve efficiency by storing values calculated in prev
 
 Under `#Constants` you may also find it productive to modify:
 
- * `filename` to substitute a file specifying fewer (or more) matches. When debugging, a smaller file can help speed feedback. The code on this repository is set to pull `schedule.csv` from this github repository, but you can modify the code to use a local file instead. 
+ * `schedule` When debugging, a smaller file can help speed feedback. The code on this repository is set to pull `schedule.csv` from this github repository, but you can replace the url with the path to a local file instead. 
  * `rounds` (default `20`) to explore the impacts of greater/lesser iteration
  * `resources` (default `["A", "B", "C", "D", "E"]`) perhaps to make resources even more scarce
  * `num_players` (default `6`) if using a file specifying matches for a different number of players
