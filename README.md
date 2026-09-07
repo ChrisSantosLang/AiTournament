@@ -14,7 +14,7 @@ MAD Chairs is a game repeated for multiple rounds. In each round, each player se
 Running the code will output three files:
  * `{strategy_name}_results.csv` shows what the players selected in each round of each match and how often they won (as a %).
  * `{strategy_name}_stats.csv` shows how well each strategy performed against the other strategies.
- * `{strategy_name}_submission.csv` is the file to submit for a Kaggle contest. It contains only the mean "ewins" of your submission (see about "ewins" below).
+ * `{strategy_name}_submission.csv` is the file to submit for a Kaggle contest. It contains only the "skill" rating for your submission (see calculation below).
 
 The stats file shows the "edge" and win rate of several strategies against each other. The standard competing strategies include
 
@@ -31,9 +31,9 @@ The stats file shows the "edge" and win rate of several strategies against each 
 
 ![Edge and win rates in 3v3 MAD Chairs](https://github.com/ChrisSantosLang/AiTournament/blob/main/Media/3v3madchairs.png?raw=true)
 
-To the extent that players are rational, they are likely to defect from B to A if A has clear edge over B, so the win rate of A against B is expected to converge toward the win rate of A against itself. Likewise, the win rate of A against B is expected to converge toward zero if B has clear edge over A (i.e. A has negative edge against B). We call this use of the edge statistic to modify win rate "ewin", where ewin_A_vs_B = min(win_A_vs_A, win_A_vs_B * (rationality ** edge_A_vs_B)). 
+To the extent that players are rational, they are likely to defect from B to A if A has clear edge over B, so the win rate of A against B is expected to converge toward the win rate of A against itself. Likewise, the win rate of A against B is expected to converge toward zero if B has clear edge over A (i.e. A has negative edge against B). We call this use of the edge statistic to modify win rate "ewin", where ewin_A_vs_B = min(mean_win_A_vs_A, mean_win_A_vs_B * (rationality ** edge_A_vs_B)). 
 
-When rationality is 1, edge has no impact on ewin. As rationality rises, edge dominates ewin (except when edge is 0). We use 50 for this software by default.
+When rationality is 1, edge has no impact on ewin. As rationality rises, edge dominates ewin (except when edge is 0). We use 50 for this software by default. The winner of each match is the strategy with the higher ewin. These wins are combined across many matches to generate a skill estimate for each strategy using the [Trueskill](https://github.com/sublee/trueskill) algorithm which has been ranking players on XBox since 2005 (like Elo rating in chess).
 
 ## Modifying the code
 The main way to modify this code is to fill the `submission()` function with your own MAD Chairs strategy. The parameters include `position: int`, `round: int`, `history: pd.DataFrame`, and `cache: dict`. The function  should return 'skip' or the letter of the resource your strategy would recommend to a player in the given `position` (1-6) and `round` (1-20) with the given `history` (which contains columns for "Position" and "Round{n}").
@@ -42,10 +42,10 @@ The cache may be used to improve efficiency by storing values calculated in prev
 
 Under `#Constants` you may also find it productive to modify:
 
- * `schedule` When debugging, a smaller file can help speed feedback. The code on this repository is set to pull `schedule.csv` from this github repository, but you can replace the url with the path to a local file instead. 
+ * `schedule` The code on this repository is set to pull `schedule.csv` from this github repository, but you can replace the url with the path to a local file instead. When debugging, a smaller file can help speed feedback. 
  * `rounds` (default `20`) to explore the impacts of greater/lesser iteration
  * `resources` (default `["A", "B", "C", "D", "E"]`) perhaps to make resources even more scarce
- * `num_players` (default `6`) if using a file specifying matches for a different number of players
+ * `num_players` (default `6`) if using a schedule file specifying matches for a different number of players
  * `rationality` (default `50`) to explore different assumptions about rationality
 
 ## Sample files
@@ -53,4 +53,4 @@ In addition to the `schedule.csv` file which specifies the matches of a tourname
 
  * `alwaysA_results.csv`: A sample results output. It was generated using `return "A"` for `submission()`.
  * `alwaysA_stats.csv`: A sample stats output. It was generated using `return "A"` for `submission()`.
- * `random5_submission.csv`: A sample submission output. It was generated using the **random5** strategy for `submission()`.
+ * `alwaysSkip_submission.csv`: A sample submission output. It was generated using the strategy of always skipping.
